@@ -1,0 +1,284 @@
+array(10) {
+  [0]=>
+  string(1) "6"
+  [1]=>
+  string(3) "0xA"
+  [2]=>
+  string(3) "0xa"
+  [3]=>
+  string(2) "08"
+  [4]=>
+  string(2) "05"
+  [5]=>
+  string(7) ""perra""
+  [6]=>
+  string(9) "'basofia'"
+  [7]=>
+  string(6) "000006"
+  [8]=>
+  string(4) "0,25"
+  [9]=>
+  string(5) "2.345"
+}
+string(12) "variable = 6"
+array(4) {
+  [0]=>
+  string(12) "variable = 6"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(1) "6"
+}
+
+Finish
+string(31) "variable = 6	#this is a comment"
+array(4) {
+  [0]=>
+  string(12) "variable = 6"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(1) "6"
+}
+
+Finish
+string(14) "variable = 0xA"
+array(5) {
+  [0]=>
+  string(14) "variable = 0xA"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(3) "0xA"
+}
+
+Finish
+string(33) "variable = 0xA	#this is a comment"
+array(5) {
+  [0]=>
+  string(14) "variable = 0xA"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(3) "0xA"
+}
+
+Finish
+string(14) "variable = 0xa"
+array(5) {
+  [0]=>
+  string(14) "variable = 0xa"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(3) "0xa"
+}
+
+Finish
+string(33) "variable = 0xa	#this is a comment"
+array(5) {
+  [0]=>
+  string(14) "variable = 0xa"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(3) "0xa"
+}
+
+Finish
+string(13) "variable = 08"
+array(6) {
+  [0]=>
+  string(13) "variable = 08"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(0) ""
+  [5]=>
+  string(2) "08"
+}
+
+Finish
+string(32) "variable = 08	#this is a comment"
+array(6) {
+  [0]=>
+  string(13) "variable = 08"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(0) ""
+  [5]=>
+  string(2) "08"
+}
+
+Finish
+string(13) "variable = 05"
+array(6) {
+  [0]=>
+  string(13) "variable = 05"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(0) ""
+  [5]=>
+  string(2) "05"
+}
+
+Finish
+string(32) "variable = 05	#this is a comment"
+array(6) {
+  [0]=>
+  string(13) "variable = 05"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(0) ""
+  [4]=>
+  string(0) ""
+  [5]=>
+  string(2) "05"
+}
+
+Finish
+string(18) "variable = "perra""
+array(3) {
+  [0]=>
+  string(18) "variable = "perra""
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(5) "perra"
+}
+
+Finish
+string(37) "variable = "perra"	#this is a comment"
+array(3) {
+  [0]=>
+  string(18) "variable = "perra""
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(5) "perra"
+}
+
+Finish
+string(20) "variable = 'basofia'"
+array(3) {
+  [0]=>
+  string(20) "variable = 'basofia'"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(7) "basofia"
+}
+
+Finish
+string(39) "variable = 'basofia'	#this is a comment"
+array(3) {
+  [0]=>
+  string(20) "variable = 'basofia'"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(7) "basofia"
+}
+
+Finish
+string(17) "variable = 000006"
+array(0) {
+}
+
+Finish
+string(36) "variable = 000006	#this is a comment"
+array(0) {
+}
+
+Finish
+string(15) "variable = 0,25"
+array(4) {
+  [0]=>
+  string(15) "variable = 0,25"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(4) "0,25"
+}
+
+Finish
+string(34) "variable = 0,25	#this is a comment"
+array(4) {
+  [0]=>
+  string(15) "variable = 0,25"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(4) "0,25"
+}
+
+Finish
+string(16) "variable = 2.345"
+array(4) {
+  [0]=>
+  string(16) "variable = 2.345"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(5) "2.345"
+}
+
+Finish
+string(35) "variable = 2.345	#this is a comment"
+array(4) {
+  [0]=>
+  string(16) "variable = 2.345"
+  [1]=>
+  string(8) "variable"
+  [2]=>
+  string(0) ""
+  [3]=>
+  string(5) "2.345"
+}
+
+Finish
+
+/^([a-zA-Z_][a-zA-Z0-9_]+)\s*=\s*(?:[\"\']([^\"\']*)[\"\']|((?(?=[^0])\d+(?:[\.\,]\d+|)|0[\.\,]\d+))|(0[xX][a-fA-F0-9]+)|(0[1-9]\d*))/
