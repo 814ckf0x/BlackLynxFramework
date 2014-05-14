@@ -20,7 +20,7 @@ $config ['dbhost'];
 $config ['dbprefix'];
 
 $config ['rootpath'];
-$config ['defaultlogpath']
+$config ['defaultlogpath'];
 
 $config ['themespath'] = $config['rootpath'] . "themes/";
 

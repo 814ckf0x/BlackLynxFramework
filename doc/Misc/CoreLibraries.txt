@@ -1,0 +1,7 @@
+Core libs:
+
+ConfigManager
+GUI
+Logger
+Module
+VarsFilter

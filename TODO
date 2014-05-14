@@ -1,1 +1,6 @@
 * Change de documentation blocks to Doxygen (Using phpdocumentor)
+* Add gettext support
+*** finalize the config class.
+* Finish the ConfigManager framework
+* Design a GUI framework
+* Design a module class

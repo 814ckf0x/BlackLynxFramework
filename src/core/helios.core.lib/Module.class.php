@@ -1,12 +1,6 @@
 <?php
 /**
- * Module.class.php
- * Creted By: blackfox
- * Create Date: Oct 07, 2010
- * Last Modified: 0ct 21, 2010
- *
- * Module is a container of modules, it saves the module name, page title,
- * calculates key words, etc...
+ * Module is a container of modules, it saves the module name, page title...
  */
 
 require_once ('config.php');
@@ -42,6 +36,8 @@ class Module {
 	 * Like sets content but appending the content.
 	 *
 	 * @param string $content
+	 * 
+	 */
 	public function addContent ($content, $offset = 1)
 	{
 		if ($offset = 0)
@@ -58,7 +54,7 @@ class Module {
 	public function getKeyWords ()
 	{
 		// TODO: implements getKeyWords function
-		return "";
+		return '';
 	}
 	
 	public function __get ($var)
