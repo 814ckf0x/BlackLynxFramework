@@ -2,8 +2,8 @@
 
 namespace Core\Selene;
 
-// Prepare VarsFilter class.
-use \Core\Eos\VarsFilter;
+// Prepare VarsFilterManager class.
+use \Core\Eos\VarsFilterManager;
 
 //Prepare Containable interface.
 use \Core\Library\Containable;
@@ -55,7 +55,7 @@ class ConfigObject implements JsonSerializable
 								 $default = NULL
 								)
 	{
-		if (!VarsFilter::validateVar (self::CO_VALID_NAME, $key)) {
+		if (!VarsFilterManager::validateVar (self::CO_VALID_NAME, $key)) {
 			$message = _('Invalid option name');
 			throw new InvalidArgumentException ();
 		}
@@ -115,7 +115,7 @@ class ConfigObject implements JsonSerializable
 			break;
 			case 'format':
 				try {
-					VarsFilter::testFilterMethod ($value);
+					VarsFilterManager::testFilterMethod ($value);
 				} catch (InvalidArgumentException $e) {
 					$message = _('Invalid option format');
 					throw new InvalidArgumentException ($message);
@@ -124,14 +124,14 @@ class ConfigObject implements JsonSerializable
 				$this->format = $value;
 			break;
 			case 'default':
-				if (!VarsFilter::validateVar ($this->format, $value)) {
+				if (!VarsFilterManager::validateVar ($this->format, $value)) {
 					$message = _('Default has not a valid format');
 					throw new InvalidArgumentException ($message);
 				}
 				$this->default = $value;
 			break;
 			default:
-				if (!VarsFilter::validateVar ($this->format, $value)) {
+				if (!VarsFilterManager::validateVar ($this->format, $value)) {
 					$message = _('Value has not a valid format');
 					throw new InvalidArgumentException ($message);
 				}

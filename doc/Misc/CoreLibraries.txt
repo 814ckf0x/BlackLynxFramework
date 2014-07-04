@@ -4,4 +4,4 @@ ConfigManager
 GUI
 Logger
 Module
-VarsFilter
+VarsFilterManager

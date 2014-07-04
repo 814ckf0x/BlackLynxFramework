@@ -2,21 +2,159 @@
 
 namespace \Core\Eos;
 
-class VarsFilter {
-	const FILTER_HTML	= 0;
-	const FILTER_MYSQL	= 1;
+class VarsFilterVar {
+	private $data = NULL;
+	private $options = NULL;
+	
+	public function __construct ($data)
+	{
+		$this->data = $data;
+	}
+	
+	public function HTML ($flags = NULL, $encoding = NULL, $double_encode = NULL)
+	{
+		return new self (htmlentities ($this->data,
+									   $flags,
+									   $encoding,
+									   $double_encode
+									  )
+						);
+	}
+	
+	public function setOption ($option, $value = NULL)
+	{
+		if (is_array ($option)) {
+			$this->options ['options'] = array_merge ($this->options ['options'],
+													  $option
+													 );
+		} else {
+			$this->options ['options'] [$option] = $value;
+		}
+	}
+	
+	public function setFlag ($flag)
+	{
+		$this->options ['flags'] |= $flag;
+	}
+	
+	public function __get ($name)
+	{
+		switch ($name) {
+			case 'HTML':
+			case 'html':
+			case 'htmlEntities':
+				return $this->HTML (ENT_QUOTES | ENT_HTML5);
+			case 'email':
+			case 'eMail':
+				$filter = \FILTER_SANITIZE_EMAIL;
+				break;
+			case 'URL':
+			case 'url':
+			case 'urlEncoded':
+				$filter = \FILTER_SANITIZE_ENCODED;
+				break;
+			case 'magicQuotes':
+				$filter = \FILTER_SANITIZE_MAGIC_QUOTES;
+				break;
+			case 'float':
+			case 'real':
+			case 'double':
+				$filter = \FILTER_SANITIZE_NUMBER_FLOAT;
+				break;
+			case 'int':
+			case 'integer':
+				$filter = \FILTER_SANITIZE_NUMBER_INT;
+				break;
+			case 'specialChars':
+			case 'htmlEspecialChars':
+			case 'HTMLEspecialChars':
+				$filter = \FILTER_SANITIZE_SPECIAL_CHARS;
+				break;
+			case 'fullSpecialChars':
+			case 'htmlFullSpecialChars':
+			case 'HTMLFullSpecialChars':
+				$filter = \FILTER_SANITIZE_FULL_SPECIAL_CHARS;
+				break;
+			case 'string':
+			case 'stripped':
+				$filter = \FILTER_SANITIZE_STRING;	
+				break;
+			case 'url':
+				$filter = \FILTER_SANITIZE_URL;
+				break;
+			case 'raw':
+			case 'origin':
+			case 'unsafe':
+			case 'data':
+				return $this->data;
+			case 'isBool':
+				$filter = \FILTER_VALIDATE_BOOLEAN;
+				break;
+			case 'isEmail':
+				$filter = \FILTER_VALIDATE_EMAIL;
+				break;
+			case 'isFloat':
+			case 'isReal':
+			case 'isDouble':
+				$filter = \FILTER_VALIDATE_FLOAT;
+				break;
+			case 'isInt':
+			case 'isInteger':
+				$filter = \FILTER_VALIDATE_INT;
+				break;
+			case 'isIP':
+			case 'isIp':
+				$filter = \FILTER_VALIDATE_IP;
+				break;
+			case 'matches':
+			case 'isValid':
+				if (!isset ($this->options ['options'] ['regexp'])) {
+					$message = _('Assign regexp option first');
+					throw new LogicException ($message);
+				}
+				
+				$pattern = $this->options ['options'] ['regexp'];
+				return VarsFilterManager::pregMatch($pattern, $this->data);
+			case 'regexp':
+				$filter = \FILTER_VALIDATE_REGEXP;
+			case 'isURL':
+			case 'isUrl':
+				$filter = \FILTER_VALIDATE_URL;
+				break;
+			default:
+				$message = _('Invalid property.');
+				throw new OutOfBoundsException ($message);
+		}
+
+		$filtered = filter_var ($this->data, $filter, $this->options);
+
+		if ((strstr ($name, 'is') === 0) || $name == 'regexp') {
+			return $filtered? true : false;
+		} else {
+			return new self ($filtered);
+		}
+	}
+	
+	public function __toString() {
+		return $this->data;
+	}
+}
+
+class VarsFilterManager {
 	
 	/**
 	 * PCRE extension errors sufix.
 	 */
 	const PREG_MESSAGE_SUFIX = 'PCRE: ';
 
-	private $vars;
+	private $vars = array ();
+	
+	static public $lastMatches = NULL;
 	
 	/**
 	 * Checks if there is an error while using PCRE extension.
 	 * 
-	 * @throws RuntimeException if there is an error while using PCRE extension.
+	 * @throws RuntimeException if error found.
 	 */
 	static public function checkPregError ()
 	{
@@ -107,7 +245,7 @@ class VarsFilter {
 										 $offset = 0
 										)
 	{
-		$match_counter = preg_match_all ($pattern, $subjet, $matches, $flags, $offset);
+		$match_counter = preg_match_all ($pattern, $subject, $matches, $flags, $offset);
 		self::checkPregError ();
 		return $match_counter;
 	}
@@ -203,264 +341,59 @@ class VarsFilter {
 	}
 
 	/**
-	 * A simplified variables validator.
+	 * Creates a new instance
 	 * 
-	 * @param string $filter The filter to use.
-	 * @param string $subject The invalidated string.
-	 * @param mixed $options Validate filter options.
-	 * 
-	 * @return bool True if $subject is valid, false otherwise.
+	 * @param array $container Contains the array of variables to be filtered.
 	 */
-	static public function validateVar ($filter, $subject, $options = NULL)
+	public function __construct ($container, $trim = true)
 	{
-		// Is $filter a PCRE pattern?
-		if (strpos ($filter, '/') === 0) {
-			$type = 'regex';
-			$options = array ('options' => array ('regexp' => $filter));
-		} else {
-			$type = $filter;
-		}
-
-		
-		$filtered = filter_var ($subject,
-								self::testFilterMethod ($type),
-								$options
-							   );
-		return ($filtered !== false);
-	}
-
-	/**
-	 * Returns a validate filter.
-	 * 
-	 * @param string $type A variable type or regex.
-	 * 
-	 * @return unknown A validate filter.
-	 * 
-	 * @throws InvalidArgumentException if $type is not a valid type
-	 */
-	static public function testFilterMethod ($type)
-	{
-		
-		switch ($type) {
-			case 'int':
-			case 'integer':
-				return FILTER_VALIDATE_INT;
-			break;
-			case 'bool':
-			case 'boolean':
-				return FILTER_VALIDATE_BOOLEAN;
-			break;
-			case 'float':
-			case 'real':
-			case 'double':
-				return FILTER_VALIDATE_FLOAT;
-			break;
-			case 'regex':
-				return FILTER_VALIDATE_REGEXP;
-			break;
-			case 'url':
-				return FILTER_VALIDATE_URL;
-			break;
-			case 'email':
-				return FILTER_VALIDATE_EMAIL;
-			break;
-			case 'ip':
-				return FILTER_VALIDATE_IP;
-			break;
-			default:
-				$message = _('Unknown filter method');
-				throw new InvalidArgumentException ($message);
-		}
-	}
-
-//TODO: update this shit.
-
-	/**
-	 * TODO translate
-	 * Guarda una copia de la matriz para filtrar
-	 * 
-	 * @param array $container
-	 * A array containing the strings to filter for.
-	 */
-	public function __construct ($container)
-	{
-		if (!is_array($container)) {
-			$message = _('Container MUST be an array');
+		if (!is_array ($container)) {
+			$message = _('Argument given MUST be array type');
 			throw new InvalidArgumentException ($message);
 		}
-
-		$this->vars = $container;
-	}
-
-	/**
-	 * Returns a unfiltered viariable contined in $vars wich key is $varname
-	 * 
-	 * @param string $varname
-	 * The key of the variable.
-	 */
-	public function unfiltered ($varname)
-	{
-		if(!isset($this->vars[$varname])){
-			return false;
+		
+		foreach ($container as $name => $value) {
+			if ($trim) {
+				$value = trim ($value);
+			}
+			$this->vars [$name] = new VarsFilterVar ($value);
 		}
-		return $this->vars[$varname];
 	}
 
 	/**
-	 * Check if $varname key exists in $vars.
+	 * Checks if $varname key exists.
 	 * 
-	 * @param string $varname
-	 * The key of the variable.
+	 * @param string $varname The key of the variable.
 	 * 
-	 * @param bool $trow
-	 * Says the funtion to throw an exception if the $varname variable does not exists.
+	 * @param bool $throw whether trow an error when not found.
 	 */
 	public function issetVar($varname, $throw = false)
 	{
-		$ret = isset($this->vars[$varname]);
+		$ret = isset ($this->vars [$varname]);
 		
 		if (!$ret && $throw) {
-			$message = _('Unknown variable');
+			$message = _('Variable is not set.');
 			throw new OutOfBoundsException ($message);
 		}
 
 		return $ret;
 	}
-	
-	/**
-	 * Searchs and return the filtered value of $varname or null if not exists.
-	 * 
-	 * @param string $varname
-	 * The key of the variable.
-	 * 
-	 * @param int $mode
-	 * TODO translate
-	 * Define el modo para filtrar las variables.
-	 * 
-	 * @param bool $nl2br
-	 * if $mode is HTML_FILTERED this var says if change the 'nl' char to '<br />' string
-	 */
-	public function getByKey ($varname, $mode = FILTER_HTML, $nl2br = true)
-	{
-		$this->issetVar ($varname, true);
-
-		switch ($mode) {
-			case FILTER_HTML:
-
-				if (is_array ($this->vars [$varname])) {
-					$temp = array_map ('htmlentities',
-										$this->vars [$varname],
-										array (ENT_QUOTES),
-										array (\Core\Core::getSystemConfigurationVar ('Page_Encoding'))
-							);
-				} else {
-					$temp = htmlentities ($this->vars [$varname],
-											ENT_QUOTES,
-											\Core\Core::getSystemConfigurationVar ('Page_Encoding')
-										);
-				}
-
-				return $nl2br? nl2br ($temp) : $temp;
-			default:
-				return mysqli_real_escape_string ($this->vars[$varname]);
-		}
-	}
 
 	public function __get ($varname)
 	{
-		$this->getByKey ($varname);
+		$this->issetVar ($varname, true);
+		return $this->vars [$varname];
 	}
 
 	/**
 	 * Adds or change the value of $varname in $vars.
 	 * 
-	 * @param string $varname
-	 * The key of the variable.
+	 * @param string $varname The key of the variable.
 	 * 
-	 * @param string $value
-	 * The value.
+	 * @param string $value The new value.
 	 */
-	public function setVal ($varname, $value = '')
+	public function __set ($varname, $value = '')
 	{
-		$this->vars[$varname] = $value;
-	}
-	
-	/**
-	 * Check if $varname in $vars correspond to the format especified by $type
-	 * 
-	 * @param string $type
-	 * The validate method
-	 * 
-	 * @param string $varname
-	 * The key of the variable.
-	 * 
-	 * @param mixed $options default NULL
-	 * Like options parameter of filter functions, please check the php documentation (ref.filter.php)
-	 */
-	public function validate ($type, $varname, $options = NULL)
-	{
-		$this->issetVar ($varname, true);
-
-		
-		return filter_var ($this->vars[$varname], $filter, $options);
-	}
-	
-	/**
-	 * Tries to sanitize the variable in $vars wich key is $varname.
-	 * 
-	 * @param string $type
-	 * The sanitize method.
-	 * 
-	 * @param string $varname
-	 * The variable key;
-	 * 
-	 * @param mixed $options
-	 * See VarsFilter::validate ()
-	 */
-	public function sanitize ($type, $varname, $options = NULL)
-	{
-		$this->issetVar ($varname, true);
-
-		switch ($type) {
-			case 'email':
-				$filter = FILTER_SANITIZE_EMAIL;
-				break;
-			case 'encoded':
-				$filter = FILTER_SANITIZE_ENCODED;
-				break;
-			case 'magic_quotes':
-				$filter = FILTER_SANITIZE_MAGIC_QUOTES;
-				break;
-			case 'float':
-			case 'real':
-			case 'double':
-			case 'number_float':
-				$filter = FILTER_SANITIZE_NUMBER_FLOAT;
-				break;
-			case 'int':
-			case 'integer':
-			case 'number_int':
-				$filter = FILTER_SANITIZE_NUMBER_INT;
-				break;
-			case 'special_chars':
-				$filter = FILTER_SANITIZE_SPECIAL_CHARS;
-				break;
-			case 'str':
-			case 'string':
-			case 'stripped':
-				$filter = FILTER_SANITIZE_STRING;
-				break;
-			case 'url':
-				$filter = FILTER_SANITIZE_URL;
-				break;
-			case 'unsafe_raw':
-				$filter = FILTER_UNSAFE_RAW; // WTF?
-				break;
-			default:
-				$message = _('Unknown sanitize method');
-				throw new BadFunctionCallException ($message);
-		}
-		
-		return filter_var ($this->vars[$varname], $filter, $options);
+		$this->vars[$varname] = new VarsFilterVar ($value);
 	}
 }
