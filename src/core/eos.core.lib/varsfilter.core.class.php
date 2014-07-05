@@ -367,7 +367,7 @@ class VarsFilterManager {
 	 * 
 	 * @param bool $throw whether trow an error when not found.
 	 */
-	public function issetVar($varname, $throw = false)
+	public function issetVar ($varname, $throw = false)
 	{
 		$ret = isset ($this->vars [$varname]);
 		
