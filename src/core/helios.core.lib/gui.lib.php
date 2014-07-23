@@ -1,41 +1,26 @@
 <?php
 
-namespace Helios\GUI;
-
-/**
- * The instances of classes which implements this interface can be used as an
- * argument for the \DOMNode::appendChild () method.
- */
-interface convertibleToDOMNode {
-	/**
-	 * As __toString () method returns a string representation of the object,
-	 * this function returns a \DOMNode representation of the object.
-	 * 
-	 * @param \DOMDocument $parent_DOM_document
-	 * @returns \DOMNode The \DOMNode representation of the object.
-	 */
-	public function asDOMNode (\DOMDocument $parent_DOM_document);
-}
+namespace Core\Helios\GUI;
 
 /**
  * This class adds some useful functions to work with HTMLPage.
  * 
  * The main change into this function is the modification of the appendChild ()
  * method, wich can recive as argument a \DOMNode or any object which its class
- * implements the \Helios\GUI\convertibleToDOMNode interface.
+ * implements the \Helios\GUI\\Core\Helios\ConvertibleToDOMNode interface.
  */
 class HTMLPageNode extends \DOMNode
 {
 	/**
 	 * Now the argument can be a \DOMNode or an interface of an object which its
-	 * class implements the \Helios\GUI\convertibleToDOMNode interface.
+	 * class implements the \Helios\GUI\\Core\Helios\ConvertibleToDOMNode interface.
 	 * 
 	 * @param mixed $new_node the appened child.
 	 * @return \HTMLPageNode The node added.
 	 */
 	public function appendChild ($new_node)
 	{
-		if ($new_node instanceof convertibleToDOMNode) {
+		if ($new_node instanceof \Core\Helios\ConvertibleToDOMNode) {
 			return parent::appendChild ($new_node->asDOMNode($this->ownerDocument));
 		} else {
 			return parent::appendChild ($new_node);
@@ -182,14 +167,14 @@ class HTMLPage extends \DOMDocument
 	const CONT_TEMPLATE_ID	= 'ContentTemplate';
 	const CONT_TITLE_ID		= 'ContentTitle';
 	const CONT_CONTENT_ID	= 'ContentContent';
-	const CONT_FOOTER_ID		= 'ContentFooter';
+	const CONT_FOOTER_ID	= 'ContentFooter';
 
 	const BLOCK_TEMPLATE_ID	= 'BlockTemplate';
-	const BLOCK_TITLE_ID		= 'BlockTitle';
+	const BLOCK_TITLE_ID	= 'BlockTitle';
 	const BLOCK_CONTENT_ID	= 'BlockContent';
 
 	const TOP_BLOCKS_ID		= 'TopBlocks';
-	const LEFT_BLOCKS_ID		= 'LefBlocks';
+	const LEFT_BLOCKS_ID	= 'LefBlocks';
 	const RIGHT_BLOCKS_ID	= 'RightBlocks';
 	const BOTTOM_BLOCKS_ID	= 'BottomBlocks';
 	const CONTENTS_ID		= 'MainContent';
@@ -201,14 +186,17 @@ class HTMLPage extends \DOMDocument
 	 * Boolean which represents if the documents is already parsed.
 	 */
 	protected $parsed = false;
+
 	/**
 	 * A path pointing to the template file.
 	 */
 	protected $template;
+
 	/**
 	 * A sub template used to insert content.
 	 */
 	protected $contentTemplate;
+
 	/**
 	 * A sub template used to insert blocks.
 	 */
@@ -223,6 +211,7 @@ class HTMLPage extends \DOMDocument
 	 * $this->contentList [Weight] = array ( contents... )
 	 */
 	protected $contentList = NULL;
+
 	/**
 	 * An array containing the page blocks.
 	 * 
@@ -232,42 +221,43 @@ class HTMLPage extends \DOMDocument
 	 * $this->blockList [Position] [Weight] = array ( blocks... )
 	 */
 	protected $blockList = NULL;
+
 	/**
 	 * A HTMLNavMenu object with the main menu of the page.
 	 */
 	protected $mainMenu = NULL;
+
 	/**
 	 * A static method used to search through an DOM elements tree for elements
 	 * with a specific attribute.
 	 * 
-	 * Without $attr_value this method will search for all elements which have
+	 * Without $attr_val this method will search for all elements which have
 	 * the specified attribute without worryng about its value.
 	 * 
 	 * @param \DOMElement $parent The root element.
 	 * @param string $attr_name The attribute used to discriminate.
-	 * @param string $attr_value The value of the attribute (Optional).
+	 * @param string $attr_val The value of the attribute (Optional).
 	 * @return array containing the found elements.
 	 */
 	static public function searchElementsByAttribute (\DOMElement $parent,
 													  $attr_name,
-													  $attr_value = NULL
+													  $attr_val = NULL
 													 )
 	{
 		$found_elements = array (); // It should be a \DOMElementList object
+
 		foreach ($parent->childNodes as $child) {
-			if ($attr_value === NULL) {
+			if ($attr_val === NULL) {
 				$child->hasAttribute ($attr_name);
-			}elseif ($child->getAttribute ($attr_name) == $attr_value){
+			}elseif ($child->getAttribute ($attr_name) == $attr_val){
 				$found_elements [] = $child;
 			}
 
 			if ($child->hasChildNodes ()) {
-				$found_elements = array_merge ($found_elements,
-											   self::searchElementsByAttribute ($child,
-																			    $attr_name,
-																			    $attr_value
-																			   )
-											  );
+				//Recursivity
+				$r = self::searchElementsByAttribute ($child, $attr_name, $attr_val)
+
+				$found_elements = array_merge ($found_elements, $r);
 			}
 		}
 		return $found_elements;
@@ -275,42 +265,13 @@ class HTMLPage extends \DOMDocument
 	//TODO: Rename?.
 
 	/**
-	 * Takes a sub-template and looks for specific ids as variable values to
-	 * append new elements.
-	 * 
-	 * The $vars parameter is an array which its keys represent the id to look
-	 * look for into the template and its values represent the object to be append.
-	 * 
-	 * @param \DOMElement $template The sub-template to be parsed.
-	 * @param array $vars An array containing the new elements.
-	 */
-	static public function parseTemplate (\DOMElement $template, $vars)
-	{
-		$newElement = $template->cloneNode ();
-
-		foreach ($vars as $id => $var) {
-			//$element = $newElement->getElementById ($id);
-			$element = self::searchElementsByAttribute($newElement, 'id', $id);
-
-			if (!($var instanceof \DOMNode)) {
-				$var = new \DOMText ((string) $var);
-			}
-
-			$element->appendChild ($var);
-			$element->removeAttribute ('id');
-		}
-		
-		return $newElement;
-	}
-	
-	/**
 	 * Creates a new \Helios\GUI\HTMLPage object.
 	 * 
 	 * @param string $template The path to the template.
 	 * @param string $version The XML version
 	 * @param string $encoding The encoding.
 	 */
-	public function __construct ($template, $version = NULL, $encoding = NULL)
+	public function __construct ($template, $version = NULL, $encoding = NULL) // FIXME: Null as default...
 	{
 		parent::__construct ($version, $encoding);
 		$this->loadHTMLFile ($template);
@@ -324,26 +285,33 @@ class HTMLPage extends \DOMDocument
 		
 		$this->template = $template;
 		
+		//Register the HTMLPageNode as DOMNode class
 		$this->registerNodeClass('HTMLPageNode', 'DOMNode');
 	}
 	
 	/**
 	 * Adds a content into the document.
 	 * 
-	 * Content can be 
-	 * 
-	 * @param type $title
-	 * @param \DOMElement $content
-	 * @param \DOMElement $footer
-	 * @param type $weight
-	 * @return type
+	 * @param string $title
+	 * @param mixed $content Can be a \DOMElement or a string
+	 * @param mixed $footer Can be a \DOMElement or a string
+	 * @param integer $weight
+	 * @return HTMLPageNode
 	 */
 	public function addContent ($title,
 								$content,
-								$footer = NULL, //FIXME: use BBCode from DB!!!
+								$footer = NULL,
 								$weight = 0
 							   )
 	{
+		if (!($content instanceof \DOMElement)) {
+			$content = $this->createTextNode ((string) $content);
+		}
+
+		if (!($footer instanceof \DOMElement)) {
+			$footer = $this->createTextNode ((string) $footer);
+		}
+
 		$vars = array (self::CONT_TITLE_ID		=> $title,
 					   self::CONT_CONTENT_ID	=> $content,
 					   self::CONT_FOOTER_ID		=> $footer
@@ -354,13 +322,25 @@ class HTMLPage extends \DOMDocument
 		
 		return $new_content;
 	}
-	
+
+	/**
+	 * addBlock 
+	 * 
+	 * @param string $title 
+	 * @param mixed $content 
+	 * @param int $position 
+	 * @param int $weight 
+	 * @access public
+	 * @return \Core\Helios\HTMLPageNode
+	 */
 	public function addBlock ($title,
-							  \DOMElement $content,
+							  $content,
 							  $position = self::BLOCK_POS_LEFT,
 							  $weight = 0
 							 )
 	{
+		if (!($content instanceof \DOMElement)) {
+			$content = $this->createTextNode ((string) $content);
 		$vars = array (self::BLOCK_TITLE_ID		=> $title,
 					   self::BLOCK_CONTENT_ID	=> $content
 					  );
@@ -385,17 +365,17 @@ class HTMLPage extends \DOMDocument
 		
 		$old_title->appendChild (new \DOMText ($title));
 	}
-	
+
 	public function getPageTitle ()
 	{
 		return (string) $this->getElementByTagName ('title')->item (0)->nodeValue;
 	}
-	
+
 	public function setMainMenu (HTMLMenu $menu)
 	{
 		$this->mainMenu = $menu;
 	}
-	
+
 	public function parseDocument ()
 	{
 		if (!$this->parsed) {
@@ -430,7 +410,7 @@ class HTMLPage extends \DOMDocument
 			$this->parsed = true;
 		}
 	}
-	
+
 	private function appendListElements ($element_list, \DOMElement $dest)
 	{
 		foreach ($element_list as $weight) {
@@ -441,15 +421,15 @@ class HTMLPage extends \DOMDocument
 	}
 }
 
-class HTMLNavMenuItem implements convertibleToDOMNode
+class HTMLNavMenuItem implements \Core\Helios\ConvertibleToDOMNode
 {
 	const HTML_MENU_ITEM_WRAPPER = 'li';
-	
+
 	protected $label;
 	protected $URI;
 	protected $HTMLWrapper;
 	protected $AnchorDOMAttributes = array ();
-	
+
 	public function __construct ($label,
 								 $URI = NULL,
 								 $HTML_wrapper = self::HTML_MENU_ITEM_WRAPPER
@@ -459,7 +439,7 @@ class HTMLNavMenuItem implements convertibleToDOMNode
 		$this->URI = $URI;
 		$this->HTMLWrapper = $HTML_wrapper;
 	}
-	
+
 	public function setAnchorDOMAttributes ($name, $value = NULL)
 	{
 		if (is_array ($name)) {
@@ -470,22 +450,22 @@ class HTMLNavMenuItem implements convertibleToDOMNode
 			$this->AnchorDOMAttributes [$name] = $value;
 		}
 	}
-	
+
 	public function asDOMNode (\DOMDocument $parent_DOM_document)
 	{
 		$DOM_element = $parent_DOM_document->createElement ($this->HTMLWrapper);
-		
+
 		if ($this->URI !== NULL) {
 			$anchor = $DOM_element->appendChild (new \DOMElement ('a'));
 			$anchor->setAttribute ('href', $this->URI);
-		
+
 			foreach ($this->AnchorDOMAttributes as $name => $value) {
 				$anchor->setAttribute ($name, $value);
 			}
 		} else {
 			$DOM_element->appendChild (new \DOMText ($this->label));
 		}
-		
+
 		return $DOM_element;
 	}
 }
@@ -493,10 +473,10 @@ class HTMLNavMenuItem implements convertibleToDOMNode
 class HTMLNavMenuList extends HTMLNavMenuItem
 {
 	const HTML_MENU_LIST_WRAPPER = 'ul';
-	
+
 	protected $menuItems;
 	protected $HTMLListWrapper;
-	
+
 	public function __construct ($label,
 								 $URI = NULL,
 								 $HTML_wrapper = parent::HTML_MENU_ITEM_WRAPPER,
@@ -504,10 +484,10 @@ class HTMLNavMenuList extends HTMLNavMenuItem
 								)
 	{
 		parent::__construct ($label, $URI, $HTML_wrapper);
-		
+
 		$this->HTMLListWrapper = $HTML_list_wrapper;
 	}
-	
+
 	public function appendMenuItem ($child)
 	{
 		if (is_array ($child)) {
@@ -520,19 +500,19 @@ class HTMLNavMenuList extends HTMLNavMenuItem
 			$this->menuItems [] = $child;
 		} // Else Ignore
 	}
-	
+
 	public function asDOMNode (\DOMDocument $parent_DOM_document) {
 		$DOM_element = parent::asDOMNode ($parent_DOM_document);
-		
+
 		$list = $DOM_element->appendChild (new \DOMElement ($this->HTMLListWrapper));
-		
+
 		foreach ($this->menuItems as $menu_item) {
 			$list->appendChild ($menu_item);
 		}
-		
+
 		return $DOM_element;
 	}
-	
+
 	public function __get ($name)
 	{
 		if ($name == 'menuItems') {
@@ -541,12 +521,12 @@ class HTMLNavMenuList extends HTMLNavMenuItem
 	}
 }
 
-class HTMLNavMenu implements convertibleToDOMNode
+class HTMLNavMenu implements \Core\Helios\ConvertibleToDOMNode
 {
 	const NAV_MENU_WRAPPER = 'nav';
-	
+
 	protected $menuDOMAttributes;
-	
+
 	protected $menuItems;
 	protected $HTMLWrapper;
 	protected $HTMLListWrapper;
@@ -558,15 +538,16 @@ class HTMLNavMenu implements convertibleToDOMNode
 		$this->HTMLWrapper = $HTML_wrapper;
 		$this->HTMLListWrapper = $HTML_list_wrapper;
 	}
+
 	public function appendMenuItem (HTMLNavMenuItem $child)
 	{
 		$this->menuItems [] = $child;
 	}
-	
+
 	public function asDOMNode (\DOMDocument $parent_DOM_document)
 	{
 		$DOM_element = $parent_DOM_document->createElement ($this->HTMLWrapper);
-		
+
 		$list = $DOM_element->appendChild (new \DOMElement ($this->HTMLListWrapper));
 		foreach ($this->menuItems as $menu_item) {
 			$list->appendChild ($menu_item);
