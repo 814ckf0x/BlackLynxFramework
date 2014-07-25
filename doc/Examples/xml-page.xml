@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ - This example page uses all available elements in the page object to give
+ - format to a text or adding objects like images you should use BBcode instead
+ - HTML. the page will automatically convert from BBcode to HTML.
+ -->
+<webpage>
+	<metadata>
+		<title>xml DOM example</title>
+		<meta>
+			<charset>utf-8</charset>
+		</meta>
+		<meta>
+			<http_equiv>refresh</http_equiv>
+			<content>300</content>
+		</meta>
+		<meta>
+			<name>application-name</name>
+			<content>some application</content>
+		</meta>
+		<meta>
+			<name>author</name>
+			<content>814cf0x b14ckf0x at someser dot ver</content>
+		</meta>
+		<meta>
+			<name>description</name>
+			<content>A XML page example</content>
+		</meta>
+		<meta>
+			<name>generator</name>
+			<content>BlackLynxCMS</content>
+		</meta>
+		<meta>
+			<name>keywords</name>
+			<content>example,keywords,xml,document</content>
+		</meta>
+		<base>
+			<href>https://webpageroot.tld/</href>
+			<target>_blank</target>
+		</base>
+		<link>
+			<rel>icon</rel>
+			<type>image/png</type>
+			<href>path/to/icon.png</href>
+			<sizes>16x16 128x128</sizes>
+		</link>
+		<link>
+			<media>screen</media>
+		</link>
+		<link>
+			<rel>help</rel>
+			<hreflang>en</hreflang>
+		</link>
+		<style>
+			<media>print</media>
+			<type>text/css</type>
+			<code>h1 {color:red;}</code>
+		</style>
+		<script>
+			<async>async</async>
+			<charset>utf-8</charset>
+			<type>text/javascript</type>
+			<code><![CDATA[ var i=20; ... ]]></code>
+		</script>
+		<script>
+			<src>some/path/to.js</src>
+			<defer>defer</defer>
+		</script>
+	</metadata>
+	<header><!-- header images are suposed to be set as backgrounds images with CSS -->
+		<legend>BlackLynxFramework</legend>
+		<sub_legend>Best framework ever</sub_legend>
+		<nav_bar>
+			<nav_menu>
+				<nav_item>
+					<href>http://to.somewhere.tld/main.php</href>
+					<hreflang>en</hreflang>
+					<target>_blank</target><!-- there MUST be a default target -->
+					<rel>help</rel>
+					<name>this is the anchor name or legend</name>
+				</nav_item>
+				<nav_item>
+					<href>some/path/foo.php</href>
+					<name>Go to foo</name>
+					<nav_item>
+						<href>some/path/foo.php?something=this</href>
+						<name>Child pointing to this</name>
+					</nav_item>
+					<nav_item>
+						<href>some/path/foo.php?something=bar</href>
+						<name>other child</name>
+					</nav_item>
+				</nav_item>
+			</nav_menu>
+		</nav_bar>
+	</header>
+	<blocks>
+		<block position="left">
+			<weight>1</weight>
+			<name>leftblock</name>
+			<id>some_html_id</id>
+			<content>hello world</content>
+		</block>
+		<block position="left">
+			<weight>-1</weight>
+			<name>navigation-menu</name>
+			<id>main-navigation</id>
+			<content>
+				<nav_menu>
+					<nav_item>
+						<href>http://to.somewhere.tld/main.php</href>
+						<hreflang>en</hreflang>
+						<target>_blank</target><!-- there MUST be a default target -->
+						<rel>help</rel>
+						<name>1.1 this is the anchor name or legend</name>
+					</nav_item>
+					<nav_item>
+						<href>some/path/foo.php</href>
+						<name>1.1 Go to foo</name>
+						<nav_item>
+							<href>some/path/foo.php?something=this</href>
+							<name>1.1 Child pointing to this</name>
+						</nav_item>
+						<nav_item>
+							<href>some/path/foo.php?something=bar</href>
+							<name>1.1 other child</name>
+						</nav_item>
+					</nav_item>
+				</nav_menu>
+			</content>
+		</block>
+	</blocks>
+	<contents>
+		<content_entry>
+			<weight>1</weight>
+			<metadata>
+				<author>
+					<name>someone</name>
+					<email>someone at somewhere dot tld</email>
+				</author>
+				<author>other autor here with@email.ltd raw format</author>
+				<date>some day</date>
+				<title>some title</title>
+			</metadata>
+			<content><![CDATA[some content here]]></content>
+		</content_entry>
+	</contents>
+	<footer>
+	<legend>This is the best page in the world, All rights reserver.</legend>
+	<nav_menu>
+		<nav_item>
+			<href>some/path/about.php</href>
+			<name>about</name>
+		</nav_item>
+		<!-- nav_item ... -->
+	</nav_menu>
+	</footer>
+</webpage>
