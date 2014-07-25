@@ -1,0 +1,3 @@
+[submodule "src/lib/JBBCode.lib"]
+	path = src/lib/JBBCode.lib
+	url = https://github.com/814ckf0x/jBBCode.git
