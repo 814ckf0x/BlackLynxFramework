@@ -1,6 +1,7 @@
 *.project
 *.swp
 *~
+*.deprecated
 *.deprecated.*
 *.autosave
 /nbproject

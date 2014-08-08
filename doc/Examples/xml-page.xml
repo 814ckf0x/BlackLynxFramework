@@ -1,158 +1,145 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE pagedocument SYSTEM "xml-page.dtd">
 <!--
- - This example page uses all available elements in the page object to give
- - format to a text or adding objects like images you should use BBcode instead
- - HTML. the page will automatically convert from BBcode to HTML.
- -->
-<webpage>
+- This example page uses all available elements in the page object to give
+- format to a text or adding objects like images you should use BBcode instead
+- HTML. the page will automatically convert from BBcode to HTML.
+-->
+<pagedocument>
 	<metadata>
 		<title>xml DOM example</title>
 		<meta>
 			<charset>utf-8</charset>
 		</meta>
 		<meta>
-			<http_equiv>refresh</http_equiv>
-			<content>300</content>
-		</meta>
-		<meta>
 			<name>application-name</name>
-			<content>some application</content>
+			<value>some application</value>
 		</meta>
 		<meta>
 			<name>author</name>
-			<content>814cf0x b14ckf0x at someser dot ver</content>
+			<value>814cf0x b14ckf0x at someser dot ver</value>
 		</meta>
 		<meta>
 			<name>description</name>
-			<content>A XML page example</content>
+			<value>A XML page example</value>
 		</meta>
 		<meta>
 			<name>generator</name>
-			<content>BlackLynxCMS</content>
+			<value>BlackLynxCMS</value>
 		</meta>
 		<meta>
 			<name>keywords</name>
-			<content>example,keywords,xml,document</content>
+			<value>example,keywords,xml,document</value>
 		</meta>
-		<base>
-			<href>https://webpageroot.tld/</href>
-			<target>_blank</target>
-		</base>
-		<link>
-			<rel>icon</rel>
-			<type>image/png</type>
-			<href>path/to/icon.png</href>
-			<sizes>16x16 128x128</sizes>
-		</link>
-		<link>
-			<media>screen</media>
-		</link>
-		<link>
-			<rel>help</rel>
-			<hreflang>en</hreflang>
-		</link>
+		<meta>
+			<name>favicon</name>
+			<value>path/to/icon.png</value>
+		</meta>
 		<style>
-			<media>print</media>
+		  <media>somewhere</media>
 			<type>text/css</type>
 			<code>h1 {color:red;}</code>
 		</style>
+		<style>
+			<type>text/css</type>
+			<src>somewhere.js</src>
+		</style>
 		<script>
-			<async>async</async>
+			<async/>
 			<charset>utf-8</charset>
 			<type>text/javascript</type>
 			<code><![CDATA[ var i=20; ... ]]></code>
 		</script>
 		<script>
+			<defer/>
 			<src>some/path/to.js</src>
-			<defer>defer</defer>
 		</script>
 	</metadata>
-	<header><!-- header images are suposed to be set as backgrounds images with CSS -->
-		<legend>BlackLynxFramework</legend>
-		<sub_legend>Best framework ever</sub_legend>
-		<nav_bar>
+	<messages>
+		<message>
+			<type>modal_alert</type>
+			<title>Unkown user</title>
+			<msg_content>Not a valid user</msg_content>
+		</message>
+		<message>
+			<type>modal_advertising</type>
+			<title>advertising</title>
+			<msg_content>Buy this thing</msg_content>
+		</message>
+		<!-- posible types: modal_alert, modal_advertising, modal_password,
+		 - dorpdown_alert, dropdown_information, dropdown_debug
+		-->
+	</messages>
+	<blocks>
+		<block>
+			<position>&postop;</position>
+			<weight>&lightweight;</weight>
+			<id>some_html_id</id>
+			<title>leftblock</title>
+			<content>hello world</content>
+		</block>
+		<block>
+			<position>&posleft;</position>
+			<weight>&middleweight;</weight>
+			<id>main-navigation</id>
+			<title>navigation-menu</title>
 			<nav_menu>
 				<nav_item>
 					<href>http://to.somewhere.tld/main.php</href>
-					<hreflang>en</hreflang>
-					<target>_blank</target><!-- there MUST be a default target -->
-					<rel>help</rel>
-					<name>this is the anchor name or legend</name>
+					<name>1.1 this is the anchor name or legend</name>
 				</nav_item>
 				<nav_item>
 					<href>some/path/foo.php</href>
-					<name>Go to foo</name>
+					<name>1.1 Go to foo</name>
 					<nav_item>
 						<href>some/path/foo.php?something=this</href>
-						<name>Child pointing to this</name>
+						<name>1.1 Child pointing to this</name>
 					</nav_item>
 					<nav_item>
 						<href>some/path/foo.php?something=bar</href>
-						<name>other child</name>
+						<name>1.1 other child</name>
 					</nav_item>
 				</nav_item>
 			</nav_menu>
-		</nav_bar>
-	</header>
-	<blocks>
-		<block position="left">
-			<weight>1</weight>
-			<name>leftblock</name>
-			<id>some_html_id</id>
-			<content>hello world</content>
-		</block>
-		<block position="left">
-			<weight>-1</weight>
-			<name>navigation-menu</name>
-			<id>main-navigation</id>
-			<content>
-				<nav_menu>
-					<nav_item>
-						<href>http://to.somewhere.tld/main.php</href>
-						<hreflang>en</hreflang>
-						<target>_blank</target><!-- there MUST be a default target -->
-						<rel>help</rel>
-						<name>1.1 this is the anchor name or legend</name>
-					</nav_item>
-					<nav_item>
-						<href>some/path/foo.php</href>
-						<name>1.1 Go to foo</name>
-						<nav_item>
-							<href>some/path/foo.php?something=this</href>
-							<name>1.1 Child pointing to this</name>
-						</nav_item>
-						<nav_item>
-							<href>some/path/foo.php?something=bar</href>
-							<name>1.1 other child</name>
-						</nav_item>
-					</nav_item>
-				</nav_menu>
-			</content>
 		</block>
 	</blocks>
-	<contents>
+	<header><!-- header images are suposed to be set as backgrounds images with CSS -->
+		<legend>BlackLynxFramework</legend>
+		<sub_legend>Best framework ever</sub_legend>
+		<nav_menu>
+			<nav_item>
+				<href>http://to.somewhere.tld/main.php</href>
+				<name>this is the anchor name or legend</name>
+			</nav_item>
+			<nav_item>
+				<href>some/path/foo.php</href>
+				<name>Go to foo</name>
+				<nav_item>
+					<href>some/path/foo.php?something=this</href>
+					<name>Child pointing to this</name>
+				</nav_item>
+				<nav_item>
+					<href>some/path/foo.php?something=bar</href>
+					<name>other child</name>
+				</nav_item>
+			</nav_item>
+		</nav_menu>
+	</header>
+	<contents><!-- mandatory element -->
 		<content_entry>
 			<weight>1</weight>
-			<metadata>
-				<author>
-					<name>someone</name>
-					<email>someone at somewhere dot tld</email>
-				</author>
-				<author>other autor here with@email.ltd raw format</author>
-				<date>some day</date>
-				<title>some title</title>
-			</metadata>
-			<content><![CDATA[some content here]]></content>
+			<title>some title</title>
+			<content>some content here</content>
 		</content_entry>
-	</contents>
+	</contents><!-- mandatory element -->
 	<footer>
-	<legend>This is the best page in the world, All rights reserver.</legend>
-	<nav_menu>
-		<nav_item>
-			<href>some/path/about.php</href>
-			<name>about</name>
-		</nav_item>
-		<!-- nav_item ... -->
-	</nav_menu>
+		<legend>This is the best page in the world, All rights reserver.</legend>
+		<nav_menu>
+			<nav_item>
+				<href>some/path/about.php</href>
+				<name>about</name>
+			</nav_item>
+			<!-- nav_item ... -->
+		</nav_menu>
 	</footer>
-</webpage>
+</pagedocument>
