@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Position related entities -->
+<!ENTITY postop "0" >
+<!ENTITY posleft "1" >
+<!ENTITY posright "2" >
+<!ENTITY posbuttom "3" >
+
+<!-- Weight related entities -->
+<!ENTITY ultralightweight "-1" >
+<!ENTITY lightweight "0" >
+<!ENTITY middleweight "2" >
+<!ENTITY heavyweight "4" >
+<!ENTITY ultraheavyweight "5" >
+
+<!-- Element definitions -->
+<!ELEMENT pagedocument (metadata?,messages?,blocks?,header?,contents?,footer?) >
+<!ELEMENT metadata (title?,(meta|style|script)*) >
+<!ELEMENT title (#PCDATA) >
+<!ELEMENT meta (charset?|(name?,value?)) >
+<!ELEMENT charset (#PCDATA) >
+<!ELEMENT name (#PCDATA) >
+<!ELEMENT value (#PCDATA) >
+<!ELEMENT style (media?,(type?,(src|code))) >
+<!ELEMENT type (#PCDATA) >
+<!ELEMENT src (#PCDATA) >
+<!ELEMENT code (#PCDATA) >
+<!ELEMENT script ((async|defer|charset)*,type?,(src|code)) >
+<!ELEMENT async EMPTY >
+<!ELEMENT defer EMPTY >
+<!ELEMENT messages (message*) >
+<!ELEMENT message (type,title,msg_content) >
+<!ELEMENT msg_content (#PCDATA) >
+<!ELEMENT blocks (block*) >
+<!ELEMENT block (position,weight,id?,title?,(content|nav_menu)) >
+<!ELEMENT position (#PCDATA) >
+<!ELEMENT weight (#PCDATA)>
+<!ELEMENT id (#PCDATA) >
+<!ELEMENT content (#PCDATA) >
+<!ELEMENT nav_menu (nav_item+) >
+<!ELEMENT nav_item (href,name,nav_item*) >
+<!ELEMENT href (#PCDATA) >
+<!ELEMENT header (legend,sub_legend?,nav_menu?) >
+<!ELEMENT legend (#PCDATA) >
+<!ELEMENT sub_legend (#PCDATA) >
+<!ELEMENT contents (content_entry*) >
+<!ELEMENT content_entry (weight,title?,content) >
+<!ELEMENT footer (legend*,nav_menu?) >
